@@ -2,7 +2,7 @@
   "name": "chillifront",
   "version": "0.0.1",
   "description": "Bluechilli's React Redux module system",
-  "main": "lib/index.js",
+  "main": "./lib/index.js",
   "module": "es/index.js",
   "jsnext:main": "es/index.js",
   "license": "MIT",
