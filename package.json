@@ -1,5 +1,5 @@
 {
-  "name": "chilliFront",
+  "name": "chillifront",
   "version": "0.0.1",
   "description": "Bluechilli's React Redux module system",
   "main": "lib/index.js",

@@ -4,7 +4,7 @@
 * Built on top of `React`, `Redux`, `React-Router 4` and `immutablejs`
 
 
-## What are chilliFront modules capable of?
+## What are chillifront modules capable of?
 
 * Redux actions, reducers & middleware
 * React-Router 4 routes
@@ -21,17 +21,17 @@
 
 #### 2. Install some dependencies
 
-`chilliFront` currently has some opinions to go about its business. Mostly around Redux and react-router-4. (RR 4 could possibly be turned into a module on a rainy day!)
+`chillifront` currently has some opinions to go about its business. Mostly around Redux and react-router-4. (RR 4 could possibly be turned into a module on a rainy day!)
 
 `yarn add history redux immutable react-redux redux-immutablejs react-router react-router-redux@next react-router-config react-router-dom`
 `yarn add redux-devtools-extension -D`
 
 
-#### 3. Copy chilliFront library
+#### 3. Copy chillifront library
 
 Until we've sorted out deployment. Copy/Paste filesystem-fu is required. You'll need the core library files for it to run.
 
-* copy `chilliFront/*` from somewhere else to your new app. `./src/` is the recommended location.
+* copy `chillifront/*` from somewhere else to your new app. `./src/` is the recommended location.
 
 #### 4. Copy/Create Modules
 
@@ -39,7 +39,7 @@ You'll need a modules directory. Modules are located in `./src/modules`. Once ag
 
 #### 5. Add Redux Store
 
-You have a few choices with how you can go about this. You can rely *completely* on the chilliFront module system, or you can go for the hybrid approach. At the time of writing, I'm aiming for a module-only approach. That is, all Redux things will be declared within an actual module - this is better imho.
+You have a few choices with how you can go about this. You can rely *completely* on the chillifront module system, or you can go for the hybrid approach. At the time of writing, I'm aiming for a module-only approach. That is, all Redux things will be declared within an actual module - this is better imho.
 
 Below is a bare-bones example for dev. `./src/redux/configureStore.js`
 
@@ -67,10 +67,10 @@ export default function configureStore(initialState, modReducers = {}, modMiddle
 In the `react-create-app` boilerplate, there is an `./src/App.js` file which serves as your initial 'presentational' entrypoint, replace it with:
 
 ```js
-import chilliFront from "./chilliFront";
+import chillifront from "./chillifront";
 import configureStore from "./redux/configureStore";
 import Entry from "./App/Entry";
-export default chilliFront(
+export default chillifront(
     [
         /* Mods go here */
     ],
@@ -127,7 +127,7 @@ However, rather than playing air guitar with the API, let's go by example.
 `./src/modules/Test/index.js`
 
 ```js
-import {Mod} from "../../chilliFront/index";
+import {Mod} from "../../chillifront/index";
 
 // Create some custom middleware.
 export default class Test extends Mod {
@@ -144,13 +144,13 @@ export default class Test extends Mod {
 
 ### Hooking a module to the app
 
-The 1st parameter of `chilliFront` expects an array of module instances.
+The 1st parameter of `chillifront` expects an array of module instances.
 
 ```js
 ...
 import Test from "./modules/Test";
 ...
-export default chilliFront(
+export default chillifront(
     [new Test()],
     configureStore
 )(Entry);
@@ -190,10 +190,10 @@ new Test({
 
 ### CreateMyApp console utilities
 
-The `chilliFront` accepts a third parameter, which if set to `true`, will output some valuable information to the console. It is strongly recommended you use this during development.
+The `chillifront` accepts a third parameter, which if set to `true`, will output some valuable information to the console. It is strongly recommended you use this during development.
 
 ```js
-export default chilliFront(
+export default chillifront(
     [], configureStore, true
 )(Entry);
 ```
@@ -274,7 +274,7 @@ Somewhere in your app (most likely your entry component), you will have a RR4 `S
 
 ```js
 import React from 'react'
-import {enhancer} from "../chilliFront/index";
+import {enhancer} from "../chillifront/index";
 import {Route, Switch} from "react-router";
 
 const AboutPage = () => <div>About</div>;
@@ -298,7 +298,7 @@ export default class extends React.Component {
 ##### 2. Using the `routes()` method in your module
 
 ```js
-	import {Mod, enhancer} from "../../chilliFront/index";
+	import {Mod, enhancer} from "../../chillifront/index";
 	// ...
 	const FooComponent = () => <div>La la laaa</div>;
 	// ...
@@ -314,7 +314,7 @@ export default class extends React.Component {
 
 4 things to note here.
 
-1. The `routes()` method returns an object that [react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config) understands. `chilliFront` will consolidate declared routes across all declared modules.
+1. The `routes()` method returns an object that [react-router-config](https://github.com/ReactTraining/react-router/tree/master/packages/react-router-config) understands. `chillifront` will consolidate declared routes across all declared modules.
 2. The entry point receives the `routes` prop, which you should place inside the `Switch` component.
 3. Routes are evaluated in the order that you declare your modules.
 4. The `enhancer` function is important. This is explained in another section.
@@ -354,7 +354,7 @@ wrapApp(){
 
 #### (2) Component enhancers
 
-As well as being able to wrap your entire app. You can (and you should) wrap each component in a HOC which is created by `chilliFront`. You may want to have a prop automatically available in every component, like user data for example.
+As well as being able to wrap your entire app. You can (and you should) wrap each component in a HOC which is created by `chillifront`. You may want to have a prop automatically available in every component, like user data for example.
 
 Best to explain by example.
 
@@ -371,7 +371,7 @@ mapStateToProps() {
 Let's create a route somewhere.
 
 ```js
-import {enhancer} from "../chilliFront";
+import {enhancer} from "../chillifront";
 ...
 <Route path="/hello" component={enhancer(Hello)}/>
 ```
@@ -382,7 +382,7 @@ const Hello = ({hello}) => <div>props.hello = {hello}</div>;
 // outputs <div>props.hello = world</div>
 ```
 
-The `enhancer` function is a HOC created by `chilliFront` which is aware of the entire module stack.
+The `enhancer` function is a HOC created by `chillifront` which is aware of the entire module stack.
 
 #### Adding custom functionality to a particular route.
 
@@ -436,7 +436,7 @@ storeSubscribe() {
 A more practical example could be:
 
 ```js
-import {Mod} from "../../chilliFront/index";
+import {Mod} from "../../chillifront/index";
 import throttle from "lodash/throttle";
 import {fromJS} from "immutable";
 

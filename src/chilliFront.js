@@ -85,7 +85,7 @@ export default (mods, configureStore) => {
     const EntryWithAppWrappers = compose(...consolidatedAppWrappers, enhancer)(EntryComponent);
     const WrapperAndRouter = withRouter(EntryWithAppWrappers);
 
-    return function chilliFront() {
+    return function chillifront() {
       return (
         <Provider store={store}>
           <ConnectedRouter history={history}>
