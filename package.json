@@ -44,6 +44,7 @@
     "clean": "rimraf lib es"
   },
   "dependencies": {
+    "immutable": "^3.8.2",
     "lodash-es": "^4.17.4",
     "object.map": "^1.0.1",
     "react": "^16.2.0",
