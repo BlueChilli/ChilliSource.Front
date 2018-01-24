@@ -35,7 +35,6 @@
   },
   "scripts": {
     "start": "cross-env BABEL_ENV=commonjs babel src --out-dir lib --watch",
-    "prepare": "npm run clean && npm run build",
     "build": "npm run build:commonjs && npm run build:es",
     "build:es": "cross-env BABEL_ENV=es babel src --out-dir es",
     "build:commonjs": "cross-env BABEL_ENV=commonjs babel src --out-dir lib",
