@@ -4,6 +4,7 @@ import {withRouter} from 'react-router-dom';
 import {compose} from 'redux';
 import {ConnectedRouter, routerReducer, routerMiddleware} from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
+import createMemoryHistory from 'history/createMemoryHistory';
 import {renderRoutes} from 'react-router-config';
 import {enhancer} from './index';
 
@@ -22,7 +23,7 @@ import {
 import ModStack from './ModStack';
 import enhanceWithExtraProps from './helpers/enhanceWithExtraProps';
 
-const history = createHistory();
+const history = typeof document != 'undefined' ? createHistory() : createMemoryHistory();
 
 export default (mods, configureStore) => {
   ModStack.add(mods);
