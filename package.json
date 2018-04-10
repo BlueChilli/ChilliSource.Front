@@ -1,6 +1,6 @@
 {
   "name": "chillifront",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Bluechilli's React Redux module system",
   "main": "./lib/index.js",
   "module": "es/index.js",
