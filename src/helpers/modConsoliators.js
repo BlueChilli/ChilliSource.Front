@@ -13,7 +13,7 @@ export const consolidateAppWrappersFromMods = mods =>
 
 // From the mod list, returns array of route objects that can be
 // processed by react-router-config
-export const consolidateRoutesFromMods = (mods) => {
+export const consolidateRoutesFromMods = mods => {
   let routes = [];
 
   // All the things to globally enhance all components
@@ -37,7 +37,7 @@ export const consolidateRoutesFromMods = (mods) => {
 };
 
 // Returns a list of reducers
-export const consolidateReducersFromMods = (mods) => {
+export const consolidateReducersFromMods = mods => {
   let reducers = {};
   mods.forEach((thisModule) => {
     reducers = {...reducers, ...thisModule.reducers()};
@@ -53,6 +53,12 @@ export const consolidateReducersFromMods = (mods) => {
 
   return reducers;
 };
+
+// Return a list of reducers (from options)
+export const consolidateReducersFromOptions = options => {
+  return options.reducers ? options.reducers : {};
+};
+
 
 export const buildMasterEnhancerFromMods = mods => mods.map((thisModule) => {
   if (thisModule.mapStateToProps() !== undefined || thisModule.mapDispatchToProps() !== undefined) {

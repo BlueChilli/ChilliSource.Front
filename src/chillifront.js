@@ -17,15 +17,16 @@ import {
   consolidateActionsFromMods,
   consolidateFunctionsFromMods,
   consolidateStoreSubscribersfromMods,
-
+  consolidateReducersFromOptions
 } from './helpers/modConsoliators';
 
 import ModStack from './ModStack';
 import enhanceWithExtraProps from './helpers/enhanceWithExtraProps';
 
+// eslint-disable-next-line
 const history = typeof document != 'undefined' ? createHistory() : createMemoryHistory();
 
-export default (mods, configureStore) => {
+export default (mods, configureStore, options = {}) => {
   ModStack.add(mods);
 
   // creates a master enhancer HOC from the mod manifest
@@ -54,7 +55,13 @@ export default (mods, configureStore) => {
   consolidatedMiddleware.push(routerMiddleware(history));
 
   // Look for modules which want to impact the reducer
-  const consolidatedReducers = consolidateReducersFromMods(mods);
+  const consolidatedReducers = {
+    ...consolidateReducersFromOptions(options),
+    ...consolidateReducersFromMods(mods)
+  };
+
+  console.log("consolidatedReducers", consolidatedReducers);
+
 
   // Looks for modules which add routes
   const consolidatedRouteComponents = consolidateRoutesFromMods(mods);

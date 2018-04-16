@@ -458,3 +458,35 @@ export default class PersistImmutableState extends Mod {
     }
 }
 ```
+
+
+### Custom Options
+
+## Adding reducers without a module
+
+Other than editing your `configStore` directly. You can add Redux reducers via the 3rd parameter of the `chillifront` function.
+
+Minimal example:
+
+```
+import testReducer from "./App/reducers/testReducer";
+
+export default chillifront(
+  // modules
+  [],
+  configureStore,
+  {
+    reducers: {
+      testReducer
+    }
+  }
+)(Entry);
+
+```
+
+
+
+
+
+
+
