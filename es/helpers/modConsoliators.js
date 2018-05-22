@@ -168,11 +168,19 @@ export var consolidateFunctionsFromMods = function consolidateFunctionsFromMods(
 };
 
 // store subscribers
-
 export var consolidateStoreSubscribersfromMods = function consolidateStoreSubscribersfromMods(mods) {
   return mods.map(function (thisModule) {
     return thisModule.storeSubscribe();
   }).filter(function (v) {
     return v !== undefined;
+  });
+};
+
+// run any initialisers
+export var consolidateInitialisers = function consolidateInitialisers(mods) {
+  mods.forEach(function (thisModule) {
+    if (typeof thisModule.init === "function") {
+      thisModule.init();
+    }
   });
 };

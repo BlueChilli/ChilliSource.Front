@@ -1,12 +1,13 @@
 import React from 'react';
 import {Provider} from 'react-redux';
-import {withRouter} from 'react-router-dom';
+import {withRouter, BrowserRouter} from 'react-router-dom';
 import {compose} from 'redux';
 import {ConnectedRouter, routerReducer, routerMiddleware} from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
 import createMemoryHistory from 'history/createMemoryHistory';
 import {renderRoutes} from 'react-router-config';
 import {enhancer} from './index';
+import history from "./getHistory";
 
 import {
   consolidateAppWrappersFromMods, buildMasterEnhancerFromMods,
@@ -17,14 +18,14 @@ import {
   consolidateActionsFromMods,
   consolidateFunctionsFromMods,
   consolidateStoreSubscribersfromMods,
-  consolidateReducersFromOptions
+  consolidateReducersFromOptions, consolidateInitialisers
 } from './helpers/modConsoliators';
 
 import ModStack from './ModStack';
 import enhanceWithExtraProps from './helpers/enhanceWithExtraProps';
 
 // eslint-disable-next-line
-const history = typeof document != 'undefined' ? createHistory() : createMemoryHistory();
+//const history = typeof document != 'undefined' ? createHistory() : createMemoryHistory();
 
 export default (mods, configureStore, options = {}) => {
   ModStack.add(mods);
@@ -60,8 +61,6 @@ export default (mods, configureStore, options = {}) => {
     ...consolidateReducersFromMods(mods)
   };
 
-  console.log("consolidatedReducers", consolidatedReducers);
-
 
   // Looks for modules which add routes
   const consolidatedRouteComponents = consolidateRoutesFromMods(mods);
@@ -83,6 +82,9 @@ export default (mods, configureStore, options = {}) => {
     store.subscribe(subscriber(store));
   });
 
+  // Any initialisers?
+  consolidateInitialisers(mods);
+
   // App and Routes are here
   return (EntryComponent) => {
 
@@ -96,9 +98,9 @@ export default (mods, configureStore, options = {}) => {
     return function chillifront() {
       return (
         <Provider store={store}>
-          <ConnectedRouter history={history}>
+          <BrowserRouter history={history}>
             <WrapperAndRouter routes={renderRoutes(consolidatedRouteComponents)}/>
-          </ConnectedRouter>
+          </BrowserRouter>
         </Provider>
       );
     };

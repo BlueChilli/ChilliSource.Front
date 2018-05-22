@@ -112,6 +112,15 @@ export const consolidateFunctionsFromMods = (mods) => {
 };
 
 // store subscribers
-
 export const consolidateStoreSubscribersfromMods = mods =>
   mods.map(thisModule => thisModule.storeSubscribe()).filter(v => v !== undefined);
+
+// run any initialisers
+export const consolidateInitialisers = mods => {
+  mods.forEach(thisModule => {
+      if (typeof thisModule.init === "function") {
+        thisModule.init();
+      }
+    }
+  );
+};
