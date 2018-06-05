@@ -1,6 +1,6 @@
 import React from 'react';
 import {Provider} from 'react-redux';
-import {withRouter, BrowserRouter} from 'react-router-dom';
+import {withRouter, Router} from 'react-router-dom';
 import {compose} from 'redux';
 import {ConnectedRouter, routerReducer, routerMiddleware} from 'react-router-redux';
 import createHistory from 'history/createBrowserHistory';
