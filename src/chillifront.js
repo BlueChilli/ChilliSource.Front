@@ -98,9 +98,9 @@ export default (mods, configureStore, options = {}) => {
     return function chillifront() {
       return (
         <Provider store={store}>
-          <BrowserRouter history={history}>
+          <Router history={history}>
             <WrapperAndRouter routes={renderRoutes(consolidatedRouteComponents)}/>
-          </BrowserRouter>
+          </Router>
         </Provider>
       );
     };
