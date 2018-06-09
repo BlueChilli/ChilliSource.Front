@@ -186,6 +186,9 @@ var ModStack = function () {
     value: function show() {
       var _this2 = this;
 
+      // React Native not a fan of this
+      if (typeof document === 'undefined') return;
+
       console.group('MODULES');
 
       var _loop = function _loop(key) {

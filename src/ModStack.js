@@ -83,6 +83,9 @@ export default class ModStack {
 
   /* eslint-disable no-console */
   static show() {
+    // React Native not a fan of this
+    if (typeof document === 'undefined') return;
+
     console.group('MODULES');
     for (const key of Object.keys(this.stack)) {
       const vals = {
