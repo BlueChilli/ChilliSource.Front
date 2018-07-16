@@ -30,7 +30,7 @@ export default class ModStack {
 
   static get(name) {
     if (this.stack[name] === undefined) {
-      throw new Error(`Uh oh, Trying to get non-existent module '${name}' from modstack.\nList of modules available:`, this.stack);
+      console.warn(`Uh oh, Trying to get non-existent module '${name}' from modstack.\nList of modules available:`, this.stack);
     }
     return this.stack[name];
   }
