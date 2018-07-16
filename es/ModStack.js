@@ -22,7 +22,7 @@ var ModStack = function () {
           _this.add(thisModule);
         });
       } else if (this.stack[mod.getId()]) {
-        throw new Error('Duplicate module ID\'s "' + mod.getId() + '" found. Please give this module a unique ID.');
+        console.warn('Duplicate module ID\'s "' + mod.getId() + '" found. Please give this module a unique ID.');
       } else {
         this.stack[mod.getId()] = mod;
       }
@@ -37,7 +37,7 @@ var ModStack = function () {
     key: 'get',
     value: function get(name) {
       if (this.stack[name] === undefined) {
-        console.warn('Uh oh, Trying to get non-existent module \'' + name + '\' from modstack.\nList of modules available:', this.stack);
+        throw new Error('Uh oh, Trying to get non-existent module \'' + name + '\' from modstack.\nList of modules available:', this.stack);
       }
       return this.stack[name];
     }
