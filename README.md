@@ -1,4 +1,4 @@
-## Chillisource.Front
+## chillifront
 
 This is the core module library for [Bluechilli's](https://github.com/BlueChilli) Front-end platform.
 
