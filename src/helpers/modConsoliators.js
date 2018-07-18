@@ -1,4 +1,4 @@
-import isArray from 'lodash-es/isArray';
+import isArray from 'lodash/isArray';
 import {compose} from 'redux';
 import ReduxConnectModule from './ReduxConnectModule';
 
