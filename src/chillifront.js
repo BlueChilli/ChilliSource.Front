@@ -2,9 +2,7 @@ import React from 'react';
 import {Provider} from 'react-redux';
 import {withRouter, Router} from 'react-router-dom';
 import {compose} from 'redux';
-import {ConnectedRouter, routerReducer, routerMiddleware} from 'react-router-redux';
-import createHistory from 'history/createBrowserHistory';
-import createMemoryHistory from 'history/createMemoryHistory';
+import {routerReducer, routerMiddleware} from 'react-router-redux';
 import {renderRoutes} from 'react-router-config';
 import {enhancer} from './index';
 import history from "./getHistory";
@@ -24,11 +22,10 @@ import {
 import ModStack from './ModStack';
 import enhanceWithExtraProps from './helpers/enhanceWithExtraProps';
 
-// eslint-disable-next-line
-//const history = typeof document != 'undefined' ? createHistory() : createMemoryHistory();
-
 export default (mods, configureStore, options = {}) => {
   ModStack.add(mods);
+
+  const useHistory = (options.useHistory) ? options.useHistory : history;
 
   // creates a master enhancer HOC from the mod manifest
   const createdMasterEnhancer = buildMasterEnhancerFromMods(mods);
@@ -98,7 +95,7 @@ export default (mods, configureStore, options = {}) => {
     return function chillifront() {
       return (
         <Provider store={store}>
-          <Router history={history}>
+          <Router history={useHistory}>
             <WrapperAndRouter routes={renderRoutes(consolidatedRouteComponents)}/>
           </Router>
         </Provider>
