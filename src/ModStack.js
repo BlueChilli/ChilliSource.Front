@@ -1,151 +1,128 @@
-// If you want to access anything from the mod ecosystem,
-// best to do with via this class
+/** Libraries */
+import ObjectMap from 'object.map';
 
-import objectMap from 'object.map';
+/** Components */
+import { Mod } from './';
 
-export default class ModStack {
-  static stack = {};
-  static actions = {};
-  static _functions = {};
+/** Class ModStack */
+class ModStack {
+	// Variables
+	/**
+	 * @member
+	 * @name stack
+	 * @type {Object.<string, Mod>}
+	 */
+	static stack = {};
+	static _masterEnhancer = x => x;
 
-  static _masterEnhancerFunction = x => x;
+	// Methods
+	static _addModuleToStack = module => {
+		const moduleID = module.getId();
 
-  static add(mod) {
-    if (Array.isArray(mod) === true) {
-      mod.forEach((thisModule) => {
-        this.add(thisModule);
-      });
-    } else if (this.stack[mod.getId()]) {
-      console.warn(`Duplicate module ID's "${mod.getId()}" found. Please give this module a unique ID.`);
-    } else {
-      this.stack[mod.getId()] = mod;
-    }
-    return true;
-  }
+		if (this.stack[moduleID]) {
+			console.warn(
+				`Duplicate entry found for Mod '${module.getId()}'. Please check your list of modules in Entry.js`
+			);
+		} else {
+			this.stack[moduleID] = module;
+		}
+	};
 
-  static getAll() {
-    return this.stack;
-  }
+	/**
+	 * Adds all the modules to our stack. Removes duplicates
+	 * @name add
+	 * @param {Mod[]} modules
+	 */
+	static add = modules => {
+		modules.forEach(module => {
+			this._addModuleToStack(module);
+		});
+		return true;
+	};
 
+	/**
+	 * @member
+	 * @name getStack
+	 * @returns {Object} An object containing key-value pairs of (moduleID, module)
+	 */
+	static getStack = () => this.stack;
 
-  static get(name) {
-    if (this.stack[name] === undefined) {
-      throw new Error(`Uh oh, Trying to get non-existent module '${name}' from modstack.\nList of modules available:`, this.stack);
-    }
-    return this.stack[name];
-  }
+	/**
+	 * Retreives the Mod selected by the user from the stack
+	 * @param {string} moduleID The Mod that the user wants to retrieve
+	 */
+	static _getModById = moduleID => {
+		if (!this.stack[moduleID]) {
+			throw new Error(
+				`You tried to retrieve the Mod '${moduleID}' but the Mod was not provided to chillifront in Entry.js. You can not fetch a non-existent Mod`
+			);
+		}
 
-  static setMasterEnhancerFunction(ef) {
-    this._masterEnhancerFunction = ef;
-  }
+		return this.stack[moduleID];
+	};
 
-  static getEnhancerFunction() {
-    return this._masterEnhancerFunction;
-  }
+	static getModByName = this._getModById;
 
-  // all actions from consolidateActionsFromMods are turned into
-  // a master blob
-  static addActions(actions) {
-    for (const key of Object.keys(actions)) {
-      for (const actionName of Object.keys(actions[key])) {
-        const actionRef = `${key}/${actionName}`;
-        this.actions[actionRef] = actions[key][actionName];
-      }
-    }
-  }
+	// Getters & Setters
+	static getMasterEnhancer = () => this._masterEnhancer;
 
-  static addFunctions(functions) {
-    for (const key of Object.keys(functions)) {
-      for (const functionName of Object.keys(functions[key])) {
-        const functionRef = `${key}/${functionName}`;
-        this._functions[functionRef] = functions[key][functionName];
-      }
-    }
-  }
+	static setMasterEnhancer = enhancer => {
+		this._masterEnhancer = enhancer;
+	};
 
-  static getActionByID(actionID) {
-    if (this.actions[actionID] === undefined) {
-      throw new Error(`Was unable to find action "${actionID}".`);
-    }
-    return this.actions[actionID];
-  }
+	// Show Logs in Console
+	static showDebugInfo = () => {
+		// React-Native is not a fan of the 'if' below
+		if (typeof document === 'undefined') {
+			return;
+		}
 
-  static getFunctionByID(functionID) {
-    if (this._functions[functionID] === undefined) {
-      throw new Error(`Was unable to find function "${functionID}".`);
-    }
-    return this._functions[functionID];
-  }
+		// Start logging
+		ObjectMap(this.stack, (module, moduleId) => {
+			const moduleName = module.getName();
 
-  static functions() {
-    return this._functions;
-  }
+			const label = moduleId === moduleName ? moduleId : `${moduleId} ${moduleName}`;
 
-  /* eslint-disable no-console */
-  static show() {
-    // React Native not a fan of this
-    if (typeof document === 'undefined') return;
+			const propertyValues = {
+				id: moduleId,
+				name: moduleName,
+				options: module.getOptions(),
+				middleware: module.middleware(),
+				reducers: module.reducers(),
+				mapStateToProps: module.mapStateToProps(),
+				mapDispatchToProps: module.mapDispatchToProps(),
+				storeEnhancer: module.storeEnhancer(),
+				wrapsApp: module.wrapsApp(),
+			};
 
-    console.group('MODULES');
-    for (const key of Object.keys(this.stack)) {
-      const vals = {
-        id: this.stack[key].getId(),
-        name: this.stack[key].getName(),
-        options: this.stack[key].getOptions(),
-        // exposes: this.stack[key].expose(),
-        routes: this.stack[key].routes(x => x),
-        hasMiddleware: this.stack[key].middleware() !== undefined,
-        wrapsApp: this.stack[key].wrapApp() !== undefined,
-        hasComponent: this.stack[key].hasComponent(),
-        actions: this.stack[key].actions(),
-        reducers: this.stack[key].reducers(),
-        mapStateToProps: this.stack[key].mapStateToProps(),
-        mapDispatchToProps: this.stack[key].mapDispatchToProps(),
-        storeEnhancer: this.stack[key].storeEnhancer(),
-      };
+			console.log(`%c ${label}`, 'color: #abec; font-weight:bold;');
+			if (propertyValues.middleware !== undefined) {
+				console.log(`[Middleware] : ${propertyValues.middleware}`);
+			}
 
-      const label = vals.id !== vals.name ? `${vals.id} (${vals.name})` : `${vals.id}`;
+			if (propertyValues.reducers !== undefined) {
+				console.log(`[Reducers] : ${propertyValues.reducers}`);
+			}
 
-      const desc = (vals.hasMiddleware ? '[Middleware]' : '') +
-        (vals.hasComponent ? '[Component]' : '') +
-        (vals.wrapsApp ? '[App Wrapper]' : '') +
-        (vals.routes !== undefined ? '[Routes]' : '') +
-        (vals.exposes !== undefined ? '[Exposes Functions]' : '') +
-        (vals.actions !== undefined ? '[Actions]' : '') +
-        (vals.reducers !== undefined ? '[Reducers]' : '') +
-        (vals.mapStateToProps !== undefined ? '[State to Props]' : '') +
-        (vals.mapDispatchToProps !== undefined ? '[Dispatch to Props]' : '') +
-        (vals.storeEnhancer !== undefined ? '[Store Enhancer]' : '');
-      console.groupCollapsed(label, desc);
+			if (propertyValues.mapStateToProps !== undefined) {
+				console.log(`[mapStateToProps] : ${propertyValues.mapStateToProps}`);
+			}
 
-      Object.keys(vals).forEach((key) => {
-        console.log(key, vals[key]);
-      });
-      console.groupEnd();
-    }
+			if (propertyValues.mapDispatchToProps !== undefined) {
+				console.log(`[mapDispatchToProps] : ${propertyValues.mapDispatchToProps}`);
+			}
 
-    console.groupEnd();
+			if (propertyValues.storeEnhancer !== undefined) {
+				console.log(`[Store Enhancer] : ${propertyValues.storeEnhancer}`);
+			}
 
-    // Show module actions
-    console.group('ACTIONS');
+			if (propertyValues.wrapsApp !== undefined) {
+				console.log(`[App Wrapper] : ${propertyValues.wrapsApp}`);
+			}
 
-    const actionTable = objectMap(
-      this.actions,
-      func => func.toString().match(/function\s*(.*?)\s*{/)[1],
-    );
-
-    console.table(actionTable);
-    console.groupEnd();
-
-    // Show module enhancers
-    console.group('FUNCTIONS');
-
-    const funcTable = objectMap(
-      this._functions,
-      func => func.toString().match(/function\s*(.*?)\s*{/)[1],
-    );
-
-    console.table(funcTable);
-    console.groupEnd();
-  }
+			console.log('');
+		});
+	};
 }
+
+export default ModStack;
