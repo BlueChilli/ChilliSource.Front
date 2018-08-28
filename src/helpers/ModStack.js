@@ -94,8 +94,6 @@ class ModStack {
 				options: module.getOptions(),
 				middleware: module.middleware(),
 				reducers: module.reducers(),
-				mapStateToProps: module.mapStateToProps(),
-				mapDispatchToProps: module.mapDispatchToProps(),
 				storeEnhancer: module.storeEnhancer(),
 				wrapsApp: module.wrapsApp(),
 			};
@@ -107,14 +105,6 @@ class ModStack {
 
 			if (propertyValues.reducers !== undefined) {
 				console.log(`[Reducers] : ${propertyValues.reducers}`);
-			}
-
-			if (propertyValues.mapStateToProps !== undefined) {
-				console.log(`[mapStateToProps] : ${propertyValues.mapStateToProps}`);
-			}
-
-			if (propertyValues.mapDispatchToProps !== undefined) {
-				console.log(`[mapDispatchToProps] : ${propertyValues.mapDispatchToProps}`);
 			}
 
 			if (propertyValues.storeEnhancer !== undefined) {

@@ -1,10 +1,5 @@
 /**
- * @module mod
- */
-
-/**
- * @typedef module:mod.Mod
- * @type {Object}
+ * @class Mod
  */
 class Mod {
 	constructor(options = {}, enhancers = {}) {
@@ -45,10 +40,6 @@ class Mod {
 	middleware = () => {};
 
 	reducers = () => {};
-
-	mapStateToProps = () => undefined;
-
-	mapDispatchToProps = () => undefined;
 
 	storeEnhancer = () => {};
 

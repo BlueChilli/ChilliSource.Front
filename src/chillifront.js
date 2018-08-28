@@ -20,10 +20,7 @@ import {
 	consolidateInitialisers,
 } from './helpers/modConsoliators';
 
-import { componentEnhancer } from './helpers/index';
-import history from './getHistory';
-
-import ModStack from './ModStack';
+import { componentEnhancer, history, ModStack } from './helpers/index';
 
 export default (mods, configureStore, options = {}) => {
 	ModStack.add(mods);
