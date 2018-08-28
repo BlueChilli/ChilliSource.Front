@@ -4,6 +4,12 @@ import ObjectMap from 'object.map';
 /** Components */
 import { Mod } from './';
 
+/** Helpers */
+const addModuleToStack = Symbol('addModuleToStack');
+const getModById = Symbol('getModById');
+const masterEnhancer = Symbol('masterEnhancer');
+const stack = Symbol('stack');
+
 /** Class ModStack */
 class ModStack {
 	// Variables
@@ -12,20 +18,34 @@ class ModStack {
 	 * @name stack
 	 * @type {Object.<string, Mod>}
 	 */
-	static stack = {};
-	static _masterEnhancer = x => x;
+	[stack] = {};
+	[masterEnhancer] = x => x;
 
-	// Methods
-	static _addModuleToStack = module => {
+	// Private Methods
+	[addModuleToStack] = module => {
 		const moduleID = module.getId();
 
-		if (this.stack[moduleID]) {
+		if (this[stack][moduleID]) {
 			console.warn(
 				`Duplicate entry found for Mod '${module.getId()}'. Please check your list of modules in Entry.js`
 			);
 		} else {
-			this.stack[moduleID] = module;
+			this[stack][moduleID] = module;
 		}
+	};
+
+	/**
+	 * Retreives the Mod selected by the user from the stack
+	 * @param {string} moduleID The Mod that the user wants to retrieve
+	 */
+	[getModById] = moduleID => {
+		if (!this[stack][moduleID]) {
+			throw new Error(
+				`You tried to retrieve the Mod '${moduleID}' but the Mod was not provided to chillifront in Entry.js. You can not fetch a non-existent Mod`
+			);
+		}
+
+		return this[stack][moduleID];
 	};
 
 	/**
@@ -35,7 +55,7 @@ class ModStack {
 	 */
 	static add = modules => {
 		modules.forEach(module => {
-			this._addModuleToStack(module);
+			this[addModuleToStack](module);
 		});
 		return true;
 	};
@@ -45,29 +65,14 @@ class ModStack {
 	 * @name getStack
 	 * @returns {Object} An object containing key-value pairs of (moduleID, module)
 	 */
-	static getStack = () => this.stack;
+	static getStack = () => this[stack];
 
-	/**
-	 * Retreives the Mod selected by the user from the stack
-	 * @param {string} moduleID The Mod that the user wants to retrieve
-	 */
-	static _getModById = moduleID => {
-		if (!this.stack[moduleID]) {
-			throw new Error(
-				`You tried to retrieve the Mod '${moduleID}' but the Mod was not provided to chillifront in Entry.js. You can not fetch a non-existent Mod`
-			);
-		}
+	static getModByName = this[getModById];
 
-		return this.stack[moduleID];
-	};
-
-	static getModByName = this._getModById;
-
-	// Getters & Setters
-	static getMasterEnhancer = () => this._masterEnhancer;
+	static getMasterEnhancer = () => this[masterEnhancer];
 
 	static setMasterEnhancer = enhancer => {
-		this._masterEnhancer = enhancer;
+		this[masterEnhancer] = enhancer;
 	};
 
 	// Show Logs in Console
@@ -78,7 +83,7 @@ class ModStack {
 		}
 
 		// Start logging
-		ObjectMap(this.stack, (module, moduleId) => {
+		ObjectMap(this[stack], (module, moduleId) => {
 			const moduleName = module.getName();
 
 			const label = moduleId === moduleName ? moduleId : `${moduleId} ${moduleName}`;
