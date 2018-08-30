@@ -1,105 +1,110 @@
+/** Libraries */
 import React from 'react';
-import {Provider} from 'react-redux';
-import {withRouter, Router} from 'react-router-dom';
-import {compose} from 'redux';
-import {routerReducer, routerMiddleware} from 'react-router-redux';
-import {renderRoutes} from 'react-router-config';
-import {enhancer} from './index';
-import history from "./getHistory";
+import { Provider } from 'react-redux';
+import { compose, combineReducers, createStore, applyMiddleware } from 'redux';
+import { connectRouter, routerMiddleware, ConnectedRouter } from 'connected-react-router';
+import { composeWithDevTools } from 'redux-devtools-extension';
+import { History } from 'history';
 
+/** Helpers */
 import {
-  consolidateAppWrappersFromMods, buildMasterEnhancerFromMods,
-  consolidateMiddlewareFromMods,
-  consolidateReducersFromMods,
-  consolidateRoutesFromMods,
-  consolidateStoreEnhancersFromMods,
-  consolidateActionsFromMods,
-  consolidateFunctionsFromMods,
-  consolidateStoreSubscribersfromMods,
-  consolidateReducersFromOptions, consolidateInitialisers
-} from './helpers/modConsoliators';
+	componentEnhancer,
+	getAppWrappers,
+	getMiddleware,
+	getReducers,
+	getReducersFromOptions,
+	getStoreEnhancers,
+	getStoreSubscribers,
+	initialiseModulesIfRequired,
+	ModStack,
+	history,
+} from './helpers';
 
-import ModStack from './ModStack';
-import enhanceWithExtraProps from './helpers/enhanceWithExtraProps';
+/**
+ * @typedef Options
+ * @property {History} useHistory The history object to use instead of the internal default object.
+ * @property {Object} reducers Addtional reducers without writing a Mod.
+ * @property {bool} debug Show logs to the console. Defaults to false.
+ * @property {bool} useDevTools Shows the redux store in the dev tools inspector. Defaults to true.
+ */
 
-export default (mods, configureStore, options = {}) => {
-  ModStack.add(mods);
+/**
+ * The main wrapper
+ * @param {Array} modules
+ * @param {Options} options
+ */
+export const chillifront = (modules, options = {}) => {
+	// Add the modules
+	ModStack.add(modules);
 
-  const useHistory = (options.useHistory) ? options.useHistory : history;
+	// If user has specified the history object, use that
+	const usableHistory = options.useHistory ? options.useHistory : history;
 
-  // creates a master enhancer HOC from the mod manifest
-  const createdMasterEnhancer = buildMasterEnhancerFromMods(mods);
+	// Get app wrappers
+	const consolidatedAppWrappers = getAppWrappers(modules);
 
-  // Functions
-  const consolidatedFunctions = consolidateFunctionsFromMods(mods);
-  ModStack.addFunctions(consolidatedFunctions);
+	// Get middleware
+	const consolidatedMiddleware = getMiddleware(modules);
+	consolidatedMiddleware.push(routerMiddleware(usableHistory));
 
-  // Actions
-  const consolidatedActions = consolidateActionsFromMods(mods);
-  ModStack.addActions(consolidatedActions);
+	// Get reducers
+	const consolidatedReducers = { ...getReducersFromOptions(options), ...getReducers(modules) };
 
-  // Add global component enhancer to stack, including actions.
-  // The enhancer function wraps every component.
-  ModStack.setMasterEnhancerFunction(compose(...createdMasterEnhancer, enhanceWithExtraProps));
+	// Get store subscribers
+	const consolidatedStoreSubscribers = getStoreSubscribers(modules);
 
-  // Look for modules which wrap the entire app. These are different to enhancers
-  // as they don't pass props up the tree.
-  const consolidatedAppWrappers = consolidateAppWrappersFromMods(mods);
+	// Get store enhancers
+	const consolidatedStoreEnhancers = getStoreEnhancers(modules);
 
-  // Look for modules which add middleware
-  const consolidatedMiddleware = consolidateMiddlewareFromMods(mods);
+	// Create store
+	const rootReducer = combineReducers(consolidatedReducers);
 
-  // add react-router-redux to middlewares too
-  consolidatedMiddleware.push(routerMiddleware(history));
+	const composedEnhancers =
+		options.useDevTools && options.useDevTools === true
+			? composeWithDevTools(
+					applyMiddleware(...consolidatedMiddleware),
+					...consolidatedStoreEnhancers
+			  )
+			: compose(
+					applyMiddleware(...consolidatedMiddleware),
+					...consolidatedStoreEnhancers
+			  );
 
-  // Look for modules which want to impact the reducer
-  const consolidatedReducers = {
-    ...consolidateReducersFromOptions(options),
-    ...consolidateReducersFromMods(mods)
-  };
+	const store = createStore(connectRouter(usableHistory)(rootReducer), {}, composedEnhancers);
 
+	// Add store subscribers
 
-  // Looks for modules which add routes
-  const consolidatedRouteComponents = consolidateRoutesFromMods(mods);
+	consolidatedStoreSubscribers.forEach(subscriber => store.subscribe(subscriber(store)));
 
-  // Looks for store subscribers
-  const consolidatedSubscribers = consolidateStoreSubscribersfromMods(mods);
+	// Initialise mods if required
+	initialiseModulesIfRequired(modules);
 
-  // Store enhancers
-  const consolidatedStoreEnhancers = consolidateStoreEnhancersFromMods(mods);
+	// Return
+	return EntryComponent => {
+		if (options.debug && options.debug === true && process.env.NODE_ENV !== 'production') {
+			ModStack.showDebugInfo();
+		}
 
-  // Insert Reducers/Middleware into the store
-  const store = configureStore(undefined, {
-    ...consolidatedReducers,
-    router: routerReducer,
-  }, consolidatedMiddleware, consolidatedStoreEnhancers);
+		/**
+		 * Wrap the main entry component with
+		 * all the app wrappers and enhancers
+		 * specified
+		 */
+		const WrappedEntryComponent = compose(
+			...consolidatedAppWrappers,
+			componentEnhancer
+		)(EntryComponent);
 
-  // Any subscribers?
-  consolidatedSubscribers.forEach((subscriber) => {
-    store.subscribe(subscriber(store));
-  });
-
-  // Any initialisers?
-  consolidateInitialisers(mods);
-
-  // App and Routes are here
-  return (EntryComponent) => {
-
-    if (process.env.NODE_ENV !== 'production') {
-      ModStack.show();
-    }
-
-    const EntryWithAppWrappers = compose(...consolidatedAppWrappers, enhancer)(EntryComponent);
-    const WrapperAndRouter = withRouter(EntryWithAppWrappers);
-
-    return function chillifront() {
-      return (
-        <Provider store={store}>
-          <Router history={useHistory}>
-            <WrapperAndRouter routes={renderRoutes(consolidatedRouteComponents)}/>
-          </Router>
-        </Provider>
-      );
-    };
-  };
+		return function chillifront() {
+			return (
+				<Provider store={store}>
+					<ConnectedRouter history={usableHistory}>
+						<div>
+							<WrappedEntryComponent />
+						</div>
+					</ConnectedRouter>
+				</Provider>
+			);
+		};
+	};
 };

@@ -1,91 +1,61 @@
-import jsonMerge from './helpers/jsonMerge';
+/**
+ * @class Mod
+ */
+class Mod {
+	constructor(options = {}, enhancers = []) {
+		this._options = { ...this.options(), ...options };
+		this._name = this.name();
+		this._enhancers = enhancers;
+		this._id = options.id || this._name;
+	}
 
-export default class Mod {
-  constructor(opts = {}, enhancers = []) {
-    this._opts = jsonMerge(this.options(), opts);
-    this._name = this.name();
-    this._enhancers = enhancers;
-    this._id = opts.id || this._name;
-  }
+	getId() {
+		return this._id;
+	}
 
-  getId() {
-    return this._id;
-  }
+	getName() {
+		return this._name;
+	}
 
-  getName() {
-    return this._name;
-  }
+	getEnhancers() {
+		return this._enhancers;
+	}
 
-  getEnhancers() {
-    return this._enhancers;
-  }
+	getOption(name) {
+		if (this._options[name] !== undefined) {
+			return this._options[name];
+		}
 
-  getOption(name) {
-    if (this._opts[name] === undefined) {
-      /* eslint-disable no-console */
-      console.warn(`You tried to call this.getOption("${name}") in "${this.getName()}" but it's undefined. \n Options available are ${JSON.stringify(this._opts)}`);
-    }
-    return this._opts[name];
-  }
+		console.warn(
+			`In Mod '${
+				this._name
+			}', You tried to call "this.getOption('${name}')" but the property ${name} is undefined. Please check that the property is defined before using it.`
+		);
+	}
 
-  getOptions() {
-    return this._opts;
-  }
+	getOptions() {
+		return this._options;
+	}
 
+	name() {
+		throw new Error(
+			`You have not implemented "name() {}" function in your Mod. This is marked as required.`
+		);
+	}
 
-  name() {
-    throw new Error(`Function name() missing in module name ${this.constructor.name}`);
-  }
+	options() {
+		return {};
+	}
 
-  options() {
-    return {};
-  }
+	middleware() {}
 
-  middleware() {
-  }
+	reducers() {}
 
-  actions() {
-  }
+	storeEnhancer() {}
 
-  reducers() {
-  }
+	storeSubscribe() {}
 
-  routes() {
-  }
-
-  wrapApp() {
-  }
-
-  functions() {
-  }
-
-
-  mapStateToProps() {
-    return undefined;
-  }
-
-  mapDispatchToProps() {
-    return undefined;
-  }
-
-  storeEnhancer() {
-
-  }
-
-  storeSubscribe() {
-
-  }
-
-  // fyi, this is still work in progress
-  component(dontThrow = false) {
-    if (!dontThrow) {
-      throw new Error(`No component exists for the '${this.getName()}' module. You tried to call getComponent() for it.`);
-    }
-    return false;
-  }
-
-  // fyi, this is still work in progress
-  hasComponent() {
-    return this.component(true) !== false;
-  }
+	wrapApp() {}
 }
+
+export default Mod;
