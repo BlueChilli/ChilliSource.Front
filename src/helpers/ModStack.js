@@ -85,19 +85,19 @@ class ModStack {
 		const logWithBullet = text =>
 			console.log(
 				`%c ${text}`,
-				'background: url("https://chillihost.bluechilli.com/S3/generic-staging/Site/TxGR1nMp00WbZD8Fi2pDxw.png") 0 0/20px 20px no-repeat; padding-left: 16px; color: #00abec; font-weight:bold;'
+				'background: url("https://chillihost.bluechilli.com/S3/generic-staging/Site/TxGR1nMp00WbZD8Fi2pDxw.png") 0 2px/auto 16px no-repeat; padding-left: 20px; color: #00abec; font-weight:bold; line-height: 20px'
 			);
 
 		const logWithTick = text =>
 			console.log(
 				`%c ${text}`,
-				'background: url("https://chillihost.bluechilli.com/S3/generic-staging/Site/QWHiUU2q5E2GiQ7VRIJ_Xw.png") 0 0/20px 20px no-repeat; padding-left: 16px; color: #FFCC00; font-weight:bold;'
+				'background: url("https://chillihost.bluechilli.com/S3/generic-staging/Site/QWHiUU2q5E2GiQ7VRIJ_Xw.png") 0 2px/16px auto no-repeat; padding-left: 20px; color: #FFCC00; font-weight:bold; line-height: 20px'
 			);
 
 		const logWithCross = text =>
 			console.log(
-				`%c Reducers`,
-				`background: url('https://chillihost.bluechilli.com/S3/generic-staging/Site/zBYUvtXKC0eP9ejLemDWIg.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #ffffff;`
+				`%c ${text}`,
+				`background: url('https://chillihost.bluechilli.com/S3/generic-staging/Site/zBYUvtXKC0eP9ejLemDWIg.png') 0 3px/14px 14px no-repeat; padding-left: 20px; color: #ffffff; line-height: 20px`
 			);
 
 		// Start logging
