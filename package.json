@@ -16,8 +16,8 @@
 		"singleQuote": true
 	},
 	"devDependencies": {
-		"@babel/core": "^7.0.0",
 		"@babel/cli": "^7.0.0",
+		"@babel/core": "^7.0.0",
 		"@babel/plugin-proposal-class-properties": "7.0.0-beta.54",
 		"@babel/plugin-proposal-decorators": "^7.0.0-beta.54",
 		"@babel/plugin-proposal-export-namespace-from": "7.0.0-beta.54",
@@ -29,6 +29,8 @@
 		"@babel/plugin-syntax-import-meta": "7.0.0-beta.54",
 		"@babel/preset-env": "^7.0.0",
 		"@babel/preset-react": "^7.0.0",
+		"@types/history": "^4.7.0",
+		"@types/react": "^16.4.13",
 		"babel-core": "^7.0.0-bridge.0",
 		"babel-loader": "^8.0.0-beta.0",
 		"eslint": "^5.1.0",
@@ -51,7 +53,7 @@
 		"redux-devtools-extension": "^2.13.5"
 	},
 	"scripts": {
-		"build": "npx babel src --out-dir dist",
+		"build": "npx babel src --out-dir dist && cp ./src/index.d.ts dist/",
 		"test": "jest",
 		"lint": "eslint src",
 		"clean": "rimraf lib es"
