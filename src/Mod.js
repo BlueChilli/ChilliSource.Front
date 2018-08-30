@@ -2,20 +2,26 @@
  * @class Mod
  */
 class Mod {
-	constructor(options = {}, enhancers = {}) {
+	constructor(options = {}, enhancers = []) {
 		this._options = { ...this.options(), ...options };
 		this._name = this.name();
 		this._enhancers = enhancers;
 		this._id = options.id || this._name;
 	}
 
-	getId = () => this._id;
+	getId() {
+		return this._id;
+	}
 
-	getName = () => this._name;
+	getName() {
+		return this._name;
+	}
 
-	getEnhancers = () => this._enhancers;
+	getEnhancers() {
+		return this._enhancers;
+	}
 
-	getOption = name => {
+	getOption(name) {
 		if (this._options[name] !== undefined) {
 			return this._options[name];
 		}
@@ -25,27 +31,31 @@ class Mod {
 				this._name
 			}', You tried to call "this.getOption('${name}')" but the property ${name} is undefined. Please check that the property is defined before using it.`
 		);
-	};
+	}
 
-	getOptions = () => this._options;
+	getOptions() {
+		return this._options;
+	}
 
-	name = () => {
+	name() {
 		throw new Error(
 			`You have not implemented "name() {}" function in your Mod. This is marked as required.`
 		);
-	};
+	}
 
-	options = () => ({});
+	options() {
+		return {};
+	}
 
-	middleware = () => {};
+	middleware() {}
 
-	reducers = () => {};
+	reducers() {}
 
-	storeEnhancer = () => {};
+	storeEnhancer() {}
 
-	storeSubscribe = () => {};
+	storeSubscribe() {}
 
-	wrapsApp = () => {};
+	wrapApp() {}
 }
 
 export default Mod;

@@ -31,16 +31,16 @@ export default (mods, configureStore, options = {}) => {
 	const createdMasterEnhancer = buildMasterEnhancerFromMods(mods);
 
 	// Functions
-	const consolidatedFunctions = consolidateFunctionsFromMods(mods);
-	ModStack.addFunctions(consolidatedFunctions);
+	// const consolidatedFunctions = consolidateFunctionsFromMods(mods);
+	// ModStack.addFunctions(consolidatedFunctions);
 
 	// Actions
-	const consolidatedActions = consolidateActionsFromMods(mods);
-	ModStack.addActions(consolidatedActions);
+	// const consolidatedActions = consolidateActionsFromMods(mods);
+	// ModStack.addActions(consolidatedActions);
 
 	// Add global component enhancer to stack, including actions.
 	// The enhancer function wraps every component.
-	ModStack.setMasterEnhancerFunction(createdMasterEnhancer);
+	// ModStack.setMasterEnhancerFunction(createdMasterEnhancer);
 
 	// Look for modules which wrap the entire app. These are different to enhancers
 	// as they don't pass props up the tree.
@@ -59,7 +59,7 @@ export default (mods, configureStore, options = {}) => {
 	};
 
 	// Looks for modules which add routes
-	const consolidatedRouteComponents = consolidateRoutesFromMods(mods);
+	// const consolidatedRouteComponents = consolidateRoutesFromMods(mods);
 
 	// Looks for store subscribers
 	const consolidatedSubscribers = consolidateStoreSubscribersfromMods(mods);

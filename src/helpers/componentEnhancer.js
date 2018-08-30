@@ -2,7 +2,7 @@
 import { compose } from 'redux';
 
 /** Components */
-import ModStack from '../ModStack';
+import { ModStack } from './';
 
 /**
  * Wraps the component in the enhancer as well
