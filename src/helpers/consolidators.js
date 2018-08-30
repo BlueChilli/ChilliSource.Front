@@ -86,10 +86,8 @@ const initialiseModulesIfRequired = modules => {
  *
  * @returns {Array}
  */
-const createMasterEnhancer = (...modules) => {
-	console.log('createMasterEnhancer > modules', modules);
-	return modules.map(module => undefined).filter(mod => mod !== undefined);
-};
+const createMasterEnhancer = (...modules) =>
+	modules.map(module => undefined).filter(mod => mod !== undefined);
 
 export {
 	getMiddleware,

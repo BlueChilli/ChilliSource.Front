@@ -33,9 +33,6 @@ export const chillifront = (modules, options = {}) => {
 	// If user has specified the history object, use that
 	const usableHistory = options.useHistory ? options.useHistory : history;
 
-	// Add a global component enhancer which wraps every component
-	ModStack.setMasterEnhancer(createMasterEnhancer);
-
 	// Get app wrappers
 	const consolidatedAppWrappers = getAppWrappers(modules);
 
@@ -70,11 +67,12 @@ export const chillifront = (modules, options = {}) => {
 	initialiseModulesIfRequired(modules);
 
 	// Return
-	const createConnectedEntryComponent = EntryComponent => {
-		if (process.env.NODE_ENV !== 'production') {
-			ModStack.showDebugInfo();
-		}
+	return EntryComponent => {
+		// if (process.env.NODE_ENV !== 'production') {
+		// 	ModStack.showDebugInfo();
+		// }
 
+		console.log('EntryComponent', EntryComponent);
 		/**
 		 * Wrap the main entry component with
 		 * all the app wrappers and enhancers
@@ -85,16 +83,18 @@ export const chillifront = (modules, options = {}) => {
 			componentEnhancer
 		)(EntryComponent);
 
-		const chillifront = () => (
-			<Provider store={store}>
-				<ConnectedRouter history={usableHistory}>
-					<WrappedEntryComponent />
-				</ConnectedRouter>
-			</Provider>
-		);
+		console.log('WrappedEntryComponent', WrappedEntryComponent);
 
-		return chillifront;
+		return function chillifront() {
+			return (
+				<Provider store={store}>
+					<ConnectedRouter history={usableHistory}>
+						<div>
+							<WrappedEntryComponent />
+						</div>
+					</ConnectedRouter>
+				</Provider>
+			);
+		};
 	};
-
-	return createConnectedEntryComponent;
 };
