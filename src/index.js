@@ -1,4 +1,4 @@
-import { chillifront } from './newChillifront';
+import { chillifront } from './chillifront';
 
 export { default as Mod } from './Mod';
 

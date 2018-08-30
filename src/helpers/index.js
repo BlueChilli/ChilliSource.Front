@@ -15,5 +15,4 @@ export {
 	getReducers,
 	getMiddleware,
 	getAppWrappers,
-	createMasterEnhancer,
 } from './consolidators';

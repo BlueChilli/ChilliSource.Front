@@ -80,15 +80,6 @@ const initialiseModulesIfRequired = modules => {
 	});
 };
 
-/**
- *
- * @param {Array} modules
- *
- * @returns {Array}
- */
-const createMasterEnhancer = (...modules) =>
-	modules.map(module => undefined).filter(mod => mod !== undefined);
-
 export {
 	getMiddleware,
 	getAppWrappers,
@@ -96,6 +87,5 @@ export {
 	getReducersFromOptions,
 	getStoreEnhancers,
 	getStoreSubscribers,
-	createMasterEnhancer,
 	initialiseModulesIfRequired,
 };
