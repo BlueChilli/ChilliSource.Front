@@ -98,21 +98,57 @@ class ModStack {
 				wrapApp: module.wrapApp(),
 			};
 
-			console.log(`%c ${label}`, 'color: #00abec; font-weight:bold;');
+			console.log(
+				`%c ${label}`,
+				'background: url("../assets/icon-bullet.png") 0 0/20px 20px no-repeat; padding-left: 16px; color: #00abec; font-weight:bold;'
+			);
+
 			if (propertyValues.middleware !== undefined) {
-				console.log(`[Middleware] : ${propertyValues.middleware}`);
+				console.log(
+					`%c Middlewware`,
+					'background: url("../assets/icon-tick.png") 0 0/20px 20px no-repeat; padding-left: 16px; color: #FFCC00; font-weight:bold;'
+				);
+			} else {
+				console.log(
+					`%c Middleware`,
+					`background: url('../assets/icon-cross.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #ffffff;`
+				);
 			}
 
 			if (propertyValues.reducers !== undefined) {
-				console.log(`[Reducers] : ${propertyValues.reducers}`);
+				console.log(
+					`%c Reducers`,
+					`background: url('../assets/icon-tick.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #FFCC00;`
+				);
+			} else {
+				console.log(
+					`%c Reducers`,
+					`background: url('../assets/icon-cross.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #ffffff;`
+				);
 			}
 
 			if (propertyValues.storeEnhancer !== undefined) {
-				console.log(`[Store Enhancer] : ${propertyValues.storeEnhancer}`);
+				console.log(
+					`%c Store Enhancer`,
+					`background: url('../assets/icon-tick.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #FFCC00;`
+				);
+			} else {
+				console.log(
+					`%c Store Enhancer`,
+					`background: url('../assets/icon-cross.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #ffffff;`
+				);
 			}
 
 			if (propertyValues.wrapApp !== undefined) {
-				console.log(`[App Wrapper] : ${propertyValues.wrapApp}`);
+				console.log(
+					`%c App Wrapper`,
+					`background: url('../assets/icon-tick.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #FFCC00;`
+				);
+			} else {
+				console.log(
+					`%c App Wrapper`,
+					`background: url('../assets/icon-cross.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #ffffff;`
+				);
 			}
 
 			console.log('');
