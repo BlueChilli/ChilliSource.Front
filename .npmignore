@@ -1,1 +1,5 @@
 /src
+.eslintignore
+.eslintrc
+.gitignore
+.babelrc
