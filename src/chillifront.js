@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { compose, combineReducers, createStore, applyMiddleware } from 'redux';
 import { connectRouter, routerMiddleware, ConnectedRouter } from 'connected-react-router';
 import { composeWithDevTools } from 'redux-devtools-extension';
+import { History } from 'history';
 
 /** Helpers */
 import {
@@ -20,10 +21,17 @@ import {
 } from './helpers';
 
 /**
+ * @typedef Options
+ * @property {History} useHistory The history object to use instead of the internal default object.
+ * @property {Object} reducers Addtional reducers without writing a Mod.
+ * @property {bool} debug Show logs to the console. Defaults to false.
+ * @property {bool} useDevTools Shows the redux store in the dev tools inspector. Defaults to true.
+ */
+
+/**
  * The main wrapper
  * @param {Array} modules
- * @param {Function} configureStore
- * @param {Object} options
+ * @param {Options} options
  */
 export const chillifront = (modules, options = {}) => {
 	// Add the modules
@@ -51,10 +59,16 @@ export const chillifront = (modules, options = {}) => {
 	// Create store
 	const rootReducer = combineReducers(consolidatedReducers);
 
-	const composedEnhancers = composeWithDevTools(
-		applyMiddleware(...consolidatedMiddleware),
-		...consolidatedStoreEnhancers
-	);
+	const composedEnhancers =
+		options.useDevTools && options.useDevTools === true
+			? composeWithDevTools(
+					applyMiddleware(...consolidatedMiddleware),
+					...consolidatedStoreEnhancers
+			  )
+			: compose(
+					applyMiddleware(...consolidatedMiddleware),
+					...consolidatedStoreEnhancers
+			  );
 
 	const store = createStore(connectRouter(usableHistory)(rootReducer), {}, composedEnhancers);
 
@@ -67,11 +81,10 @@ export const chillifront = (modules, options = {}) => {
 
 	// Return
 	return EntryComponent => {
-		// if (process.env.NODE_ENV !== 'production') {
-		// 	ModStack.showDebugInfo();
-		// }
+		if (options.debug && options.debug === true && process.env.NODE_ENV !== 'production') {
+			ModStack.showDebugInfo();
+		}
 
-		console.log('EntryComponent', EntryComponent);
 		/**
 		 * Wrap the main entry component with
 		 * all the app wrappers and enhancers
@@ -81,8 +94,6 @@ export const chillifront = (modules, options = {}) => {
 			...consolidatedAppWrappers,
 			componentEnhancer
 		)(EntryComponent);
-
-		console.log('WrappedEntryComponent', WrappedEntryComponent);
 
 		return function chillifront() {
 			return (

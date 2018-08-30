@@ -98,7 +98,7 @@ class ModStack {
 				wrapApp: module.wrapApp(),
 			};
 
-			console.log(`%c ${label}`, 'color: #abec; font-weight:bold;');
+			console.log(`%c ${label}`, 'color: #00abec; font-weight:bold;');
 			if (propertyValues.middleware !== undefined) {
 				console.log(`[Middleware] : ${propertyValues.middleware}`);
 			}

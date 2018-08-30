@@ -14,20 +14,14 @@ import { ModStack } from './';
  * @returns {React.ComponentType} component
  */
 const componentEnhancer = (component, ...otherEnhancers) => {
-	console.log('component', component);
-	console.log('otherEnhancers', otherEnhancers);
-
 	if (otherEnhancers) {
-		const enhancedComponent = compose(
+		return compose(
 			ModStack.getMasterEnhancer(),
 			...otherEnhancers
 		)(component);
-		console.log('enhancedComponent', enhancedComponent);
-		return enhancedComponent;
 	}
-	const enhancedComponent = ModStack.getMasterEnhancer()(component);
-	console.log('enhancedComponent', enhancedComponent);
-	return enhancedComponent;
+
+	return ModStack.getMasterEnhancer()(component);
 };
 
 export default componentEnhancer;
