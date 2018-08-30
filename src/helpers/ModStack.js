@@ -82,6 +82,24 @@ class ModStack {
 			return;
 		}
 
+		const logWithBullet = text =>
+			console.log(
+				`%c ${text}`,
+				'background: url("https://chillihost.bluechilli.com/S3/generic-staging/Site/TxGR1nMp00WbZD8Fi2pDxw.png") 0 0/20px 20px no-repeat; padding-left: 16px; color: #00abec; font-weight:bold;'
+			);
+
+		const logWithTick = text =>
+			console.log(
+				`%c ${text}`,
+				'background: url("https://chillihost.bluechilli.com/S3/generic-staging/Site/QWHiUU2q5E2GiQ7VRIJ_Xw.png") 0 0/20px 20px no-repeat; padding-left: 16px; color: #FFCC00; font-weight:bold;'
+			);
+
+		const logWithCross = text =>
+			console.log(
+				`%c Reducers`,
+				`background: url('https://chillihost.bluechilli.com/S3/generic-staging/Site/zBYUvtXKC0eP9ejLemDWIg.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #ffffff;`
+			);
+
 		// Start logging
 		ObjectMap(this.stack, (module, moduleId) => {
 			const moduleName = module.getName();
@@ -98,57 +116,30 @@ class ModStack {
 				wrapApp: module.wrapApp(),
 			};
 
-			console.log(
-				`%c ${label}`,
-				'background: url("../assets/icon-bullet.png") 0 0/20px 20px no-repeat; padding-left: 16px; color: #00abec; font-weight:bold;'
-			);
+			logWithBullet(label);
 
 			if (propertyValues.middleware !== undefined) {
-				console.log(
-					`%c Middlewware`,
-					'background: url("../assets/icon-tick.png") 0 0/20px 20px no-repeat; padding-left: 16px; color: #FFCC00; font-weight:bold;'
-				);
+				logWithTick('Middleware');
 			} else {
-				console.log(
-					`%c Middleware`,
-					`background: url('../assets/icon-cross.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #ffffff;`
-				);
+				logWithCross('Middleware');
 			}
 
 			if (propertyValues.reducers !== undefined) {
-				console.log(
-					`%c Reducers`,
-					`background: url('../assets/icon-tick.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #FFCC00;`
-				);
+				logWithTick('Reducers');
 			} else {
-				console.log(
-					`%c Reducers`,
-					`background: url('../assets/icon-cross.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #ffffff;`
-				);
+				logWithCross('Reducers');
 			}
 
 			if (propertyValues.storeEnhancer !== undefined) {
-				console.log(
-					`%c Store Enhancer`,
-					`background: url('../assets/icon-tick.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #FFCC00;`
-				);
+				logWithTick('Store Enhancer');
 			} else {
-				console.log(
-					`%c Store Enhancer`,
-					`background: url('../assets/icon-cross.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #ffffff;`
-				);
+				logWithCross('Store Enhancer');
 			}
 
 			if (propertyValues.wrapApp !== undefined) {
-				console.log(
-					`%c App Wrapper`,
-					`background: url('../assets/icon-tick.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #FFCC00;`
-				);
+				logWithTick('App Wrapper');
 			} else {
-				console.log(
-					`%c App Wrapper`,
-					`background: url('../assets/icon-cross.png') 0 0/20px 20px no-repeat; padding-left: 16px; color: #ffffff;`
-				);
+				logWithCross('App Wrapper');
 			}
 
 			console.log('');
