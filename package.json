@@ -1,6 +1,6 @@
 {
 	"name": "chillifront",
-	"version": "1.0.1",
+	"version": "1.0.2",
 	"description": "Bluechilli's React Redux module system",
 	"license": "MIT",
 	"main": "dist/index.js",
